@@ -1,8 +1,46 @@
 import { Box, Typography, Button, Card, CardHeader, CardContent } from "@mui/material";
-
+import { styled } from "@mui/system";
 
 export default function MainPage() {
 
+  // styled Box로 Hero 배경 장식 구현
+const HeroSection = styled(Box)(({ theme }) => ({
+  position: "relative",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: "40vh",
+  textAlign: "center",
+  width: "100%",
+  margin: 0,
+  padding: "32px 16px",
+  backgroundImage: "linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)",
+  overflow: "hidden",
+
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: "-50%",
+    right: "-10%",
+    width: "500px",
+    height: "500px",
+    background: "rgba(255, 193, 7, 0.3)",
+    borderRadius: "50%",
+    zIndex: 0,
+  },
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: "-30%",
+    left: "-10%",
+    width: "400px",
+    height: "400px",
+    background: "rgba(255, 255, 255, 0.1)",
+    borderRadius: "50%",
+    zIndex: 0,
+  },
+}));
 
   return (
     <Box
@@ -19,26 +57,14 @@ export default function MainPage() {
       }}
     >
       {/* 메인 헤로 섹션 */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "40vh",
-          textAlign: "center",
-          width: "100%",
-          margin: 0,
-          padding: "32px 16px",
-          backgroundImage: "linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)",
-        }}
-      >
+      <HeroSection>
         <Typography
           variant="h2"
           sx={{
             mb: 2,
             fontWeight: "bold",
             color: "#fff",
+            zIndex: 1,
           }}
         >
           스마트한 여행 계획의 시작
@@ -49,6 +75,7 @@ export default function MainPage() {
             mb: 4,
             color: "#fff",
             maxWidth: "600px",
+            zIndex: 1,
           }}
         >
           지도, 날씨, 교통 정보를 한 번에 확인하고 완벽한 여행을 계획하세요
@@ -64,15 +91,16 @@ export default function MainPage() {
             borderRadius: "50px",
             border: "solid 2px #fff",
             transition: "all 0.3s ease",
-              "&:hover": {
-                backgroundColor: "#fff",
-                color: "#63a7eb",
-              },
+            zIndex: 1,
+            "&:hover": {
+              backgroundColor: "#fff",
+              color: "#63a7eb",
+            },
           }}
         >
           여행 계획 시작하기
         </Button>
-      </Box>
+      </HeroSection>
 
       {/* 기능 소개 섹션 */}
       <Box

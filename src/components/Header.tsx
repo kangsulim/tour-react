@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import AuthModal from "./AuthModal.tsx";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const [openLoginModal, setOpenLoginModal] = useState(false);
@@ -50,7 +51,7 @@ export default function Header() {
           height: "80px",
           boxSizing: "border-box",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
           alignItems: "center",
           backgroundColor: "#fff",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -62,10 +63,10 @@ export default function Header() {
         <div style={{ fontSize: "24px", fontWeight: "bold" }}>🌍 어디로든 문</div>
         
         <nav style={{ display: "flex", gap: "32px", alignItems: "center" }}>
-          <a href="/" style={{ textDecoration: "none", color: "#333", fontSize: "1.1rem", fontWeight: "500" }}>홈</a>
-          <a href="/plan" style={{ textDecoration: "none", color: "#333", fontSize: "1.1rem", fontWeight: "500" }}>여행 계획</a>
-          <a href="/thread" style={{ textDecoration: "none", color: "#333", fontSize: "1.1rem", fontWeight: "500" }}>여행 게시판</a>
-          <a href="/mypage" style={{ textDecoration: "none", color: "#333", fontSize: "1.1rem", fontWeight: "500" }}>마이페이지</a>
+          <Link to="/" style={{ textDecoration: "none", color: "#333", fontSize: "1.1rem", fontWeight: "500" }}>홈</Link>
+          <Link to="/plan" style={{ textDecoration: "none", color: "#333", fontSize: "1.1rem", fontWeight: "500" }}>여행 계획</Link>
+          <Link to="/thread" style={{ textDecoration: "none", color: "#333", fontSize: "1.1rem", fontWeight: "500" }}>여행 게시판</Link>
+          <Link to="/mypage" style={{ textDecoration: "none", color: "#333", fontSize: "1.1rem", fontWeight: "500" }}>마이페이지</Link>
         </nav>
 
         <div className="auth-buttons">
