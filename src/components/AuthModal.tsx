@@ -79,9 +79,10 @@ export default function AuthModal({
         timeout: 10000, // 10초 타임아웃
       });
   
+      alert("로그인 되었습니다.");
       console.log("로그인 성공:", response.data);
       localStorage.setItem('token', response.data.token);
-      onCloseLogin();
+      onCloseLogin(); // 이 함수에서 Header의 로그인 상태가 업데이트됨
       setLoginData({ email: '', password: '' });
     } catch (error: any) {
       console.error("로그인 실패:", error);
@@ -95,55 +96,54 @@ export default function AuthModal({
     }
   };
 
-  // handleSignup 함수도 동일하게 수정
-const handleSignup = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setSignupLoading(true);
-  setSignupError('');
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSignupLoading(true);
+    setSignupError('');
 
-  if (signupData.password !== signupData.confirmPassword) {
-    setSignupError("비밀번호가 일치하지 않습니다.");
-    setSignupLoading(false);
-    return;
-  }
-
-  try {
-    const newUser = {
-      username: signupData.email,
-      password: signupData.password,
-      name: signupData.name,
-      email: signupData.email,
-      nickname: signupData.nickname,
-      phone: signupData.phone || '', // 전화번호는 선택 사항이므로 기본값 설정
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    const response = await axios.post('http://localhost:8080/api/users/register', newUser, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 10000,
-    });
-
-    console.log("회원가입 성공:", response.data);
-    onCloseSignup();
-    setSignupData({ name: '', username: '', email: '', password: '', confirmPassword: '' , nickname: '', phone: '' });
-    
-    setTimeout(() => {
-      onBackToLogin();
-    }, 100);
-  } catch (error: any) {
-    console.error("회원가입 실패:", error);
-    if (error.code === 'ERR_NETWORK') {
-      setSignupError("서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.");
-    } else {
-      setSignupError(error.response?.data?.message || "회원가입에 실패했습니다.");
+    if (signupData.password !== signupData.confirmPassword) {
+      setSignupError("비밀번호가 일치하지 않습니다.");
+      setSignupLoading(false);
+      return;
     }
-  } finally {
-    setSignupLoading(false);
-  }
-};
+
+    try {
+      const newUser = {
+        username: signupData.email,
+        password: signupData.password,
+        name: signupData.name,
+        email: signupData.email,
+        nickname: signupData.nickname,
+        phone: signupData.phone || '', // 전화번호는 선택 사항이므로 기본값 설정
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      const response = await axios.post('http://localhost:8080/api/users/register', newUser, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
+      });
+
+      console.log("회원가입 성공:", response.data);
+      onCloseSignup();
+      setSignupData({ name: '', username: '', email: '', password: '', confirmPassword: '' , nickname: '', phone: '' });
+      
+      setTimeout(() => {
+        onBackToLogin();
+      }, 100);
+    } catch (error: any) {
+      console.error("회원가입 실패:", error);
+      if (error.code === 'ERR_NETWORK') {
+        setSignupError("서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.");
+      } else {
+        setSignupError(error.response?.data?.message || "회원가입에 실패했습니다.");
+      }
+    } finally {
+      setSignupLoading(false);
+    }
+  };
 
   // 모달 스타일
   const modalStyle = {
@@ -298,7 +298,7 @@ const handleSignup = async (e: React.FormEvent) => {
               fullWidth
               name="nickname"
               label="닉네임"
-              type="nickname"
+              type="text"
               variant="outlined"
               margin="normal"
               required
@@ -310,7 +310,7 @@ const handleSignup = async (e: React.FormEvent) => {
               fullWidth
               name="phone"
               label="전화번호"
-              type="phone"
+              type="tel"
               variant="outlined"
               margin="normal"
               required

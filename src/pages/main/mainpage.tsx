@@ -1,44 +1,245 @@
-import { Box, Container, Typography, Button, Card, CardHeader, CardContent } from "@mui/material";
+import { Box, Typography, Button, Card, CardHeader, CardContent } from "@mui/material";
 
 
 export default function MainPage() {
 
 
   return (
+    <Box
+      sx={{
+        minHeight: "calc(100vh - 80px)",
+        margin: 0,
+        padding: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        backgroundColor: "#f5f5f5",
+        width: "100%",
+        flex: 1,
+      }}
+    >
+      {/* 메인 헤로 섹션 */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "40vh",
+          textAlign: "center",
+          width: "100%",
+          margin: 0,
+          padding: "32px 16px",
+          backgroundImage: "linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)",
+        }}
+      >
+        <Typography
+          variant="h2"
+          sx={{
+            mb: 2,
+            fontWeight: "bold",
+            color: "#fff",
+          }}
+        >
+          스마트한 여행 계획의 시작
+        </Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            mb: 4,
+            color: "#fff",
+            maxWidth: "600px",
+          }}
+        >
+          지도, 날씨, 교통 정보를 한 번에 확인하고 완벽한 여행을 계획하세요
+        </Typography>
+        <Button
+          variant="contained"
+          size="large"
+          sx={{
+            py: 1.5,
+            px: 4,
+            fontSize: "1.1rem",
+            backgroundColor: "#63a7eb",
+            borderRadius: "50px",
+            border: "solid 2px #fff",
+            transition: "all 0.3s ease",
+              "&:hover": {
+                backgroundColor: "#fff",
+                color: "#63a7eb",
+              },
+          }}
+        >
+          여행 계획 시작하기
+        </Button>
+      </Box>
 
-    
-    <Container className="main-page">
-      <Container >
-        <Typography variant="h2"> 스마트한 여행 계획의 시작</Typography>
-        <Typography> 지도, 날씨, 교통 정보를 한 번에 확인하고 완벽한 여행을 계획하세요</Typography>
-        <Button>여행 계획 시작하기</Button>
-      </Container>
-      <Box className="feature">
-        <Typography variant="h3">어디로든 문의 주요 기능</Typography>
-        <Box display={"flex"}>
-          <Card>
-            <CardHeader title="🗺️" />
-            <CardContent>
-              <Typography variant="h5">지도 통합</Typography>
-              <Typography>카카오 지도 API를 활용하여 여행지 정보를 한눈에 확인하고 경로를 계획할 수 있습니다.</Typography>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader title="🗺️" />
-            <CardContent>
-              <Typography variant="h5">지도 통합</Typography>
-              <Typography>카카오 지도 API를 활용하여 여행지 정보를 한눈에 확인하고 경로를 계획할 수 있습니다.</Typography>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader title="🗺️" />
-            <CardContent>
-              <Typography variant="h5">지도 통합</Typography>
-              <Typography>카카오 지도 API를 활용하여 여행지 정보를 한눈에 확인하고 경로를 계획할 수 있습니다.</Typography>
-            </CardContent>
-          </Card>
+      {/* 기능 소개 섹션 */}
+      <Box
+        sx={{
+          width: "100%",
+          backgroundColor: "white",
+          margin: 0,
+          padding: "64px 16px",
+        }}
+      >
+        <Box sx={{ width: "100%", margin: 0, padding: 0 }}>
+          <Typography
+            variant="h3"
+            sx={{
+              textAlign: "center",
+              mb: 6,
+              fontWeight: "bold",
+              color: "#333",
+            }}
+          >
+            어디로든 문의 주요 기능
+          </Typography>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', flexWrap: 'wrap' }}>
+            <Card
+              sx={{
+                flex: 1,
+                maxWidth: 350,
+                boxShadow: 3,
+                borderRadius: "5%",
+                padding: "1rem 0",
+              }}
+            >
+              <CardHeader
+                title={
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      backgroundColor: "#398ee3",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto",
+                      fontSize: "2.5rem",
+                    }}
+                  >
+                    🗺️
+                  </Box>
+                }
+                sx={{
+                  textAlign: "center",
+                  fontSize: "3rem",
+                }}
+              />
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    mb: 2,
+                    fontWeight: "bold",
+                    color: "#000",
+                  }}
+                >
+                  지도 통합
+                </Typography>
+                <Typography color="text.secondary">카카오 지도 API를 활용하여 여행지 정보를 한눈에 확인하고 경로를 계획할 수 있습니다.</Typography>
+              </CardContent>
+            </Card>
+
+            <Card
+              sx={{
+                flex: 1,
+                maxWidth: 350,
+                boxShadow: 3,
+                borderRadius: "5%",
+                padding: "1rem 0",
+              }}
+            >
+              <CardHeader
+                title={
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      backgroundColor: "#398ee3",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto",
+                      fontSize: "2.5rem",
+                    }}
+                  >
+                    🌤️
+                  </Box>
+                }
+                sx={{
+                  textAlign: "center",
+                  fontSize: "3rem",
+                }}
+              />
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    mb: 2,
+                    fontWeight: "bold",
+                    color: "#000",
+                  }}
+                >
+                  날씨 정보
+                </Typography>
+                <Typography color="text.secondary">실시간 날씨 정보를 확인하여 여행 계획에 맞는 최적의 일정을 세울 수 있습니다.</Typography>
+              </CardContent>
+            </Card>
+
+            <Card
+              sx={{
+                flex: 1,
+                maxWidth: 350,
+                boxShadow: 3,
+                borderRadius: "5%",
+                padding: "1rem 0",
+              }}
+            >
+              <CardHeader
+                title={
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      backgroundColor: "#398ee3",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto",
+                      fontSize: "2.5rem",
+                    }}
+                  >
+                    🚗
+                  </Box>
+                }
+                sx={{
+                  textAlign: "center",
+                  fontSize: "3rem",
+                }}
+              />
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    mb: 2,
+                    fontWeight: "bold",
+                    color: "#000",
+                  }}
+                >
+                  교통 정보
+                </Typography>
+                <Typography color="text.secondary">실시간 교통 상황과 대중교통 정보를 제공하여 효율적인 이동 경로를 안내합니다.</Typography>
+              </CardContent>
+            </Card>
+          </div>
         </Box>
-      </Box>  
-    </Container>
+      </Box>
+    </Box>
   );
 }
