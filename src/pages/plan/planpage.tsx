@@ -1,4 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
+import MapSearch from "../../components/MapSearch";
 
 export default function PlanPage() {
   
@@ -38,9 +39,32 @@ export default function PlanPage() {
           <Typography variant="h6" fontWeight={"light"}>완벽한 여행을 위한 스마트한 계획을 세워보세요</Typography> 
         </Container>
       </Container>
-      <Box>
+      <Container>
         
-      </Box>
+        <Box>
+          <Box sx={{
+            padding: 2,
+            width: "100%",
+            height: "70vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#fff",
+            borderRadius: "10px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            marginBottom: 4,
+            overflow: "hidden",
+            
+          }}>
+            <MapSearch></MapSearch>
+          </Box>
+          <Box>
+
+          </Box>
+        </Box>
+      </Container>
+        
     </Box>
   );
 }
