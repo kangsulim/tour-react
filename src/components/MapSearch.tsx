@@ -2,17 +2,16 @@ import React, { useRef, useState, useCallback } from 'react';
 import {
   GoogleMap,
   Marker,
-  InfoWindow,
   Autocomplete,
   useLoadScript,
 } from '@react-google-maps/api';
+import { useLocation } from '../contexts/LocationContext'; // LocationContext import 추가
 
 const libraries: ('places')[] = ['places'];
 
 const mapContainerStyle = {
   width: '100%',
   height: '600px',
-  
 };
 
 const initialCenter = {
@@ -22,9 +21,12 @@ const initialCenter = {
 
 const MapSearch: React.FC = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyApo98kj_iEowsLsb7oYHuRojfluMVXze8',
+    googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY',
     libraries,
   });
+
+  // LocationContext 사용
+  const { setLocationData } = useLocation();
 
   const [selectedLocation, setSelectedLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [placeName, setPlaceName] = useState<string>('');
@@ -47,6 +49,16 @@ const MapSearch: React.FC = () => {
     // 검색할 장소 유형 설정
     autocomplete.setTypes(['establishment', 'geocode']);
   };
+
+  // 위치 데이터를 Context에 업데이트하는 함수
+  const updateLocationContext = useCallback((location: google.maps.LatLngLiteral, name: string, address: string) => {
+    setLocationData({
+      lat: location.lat,
+      lng: location.lng,
+      placeName: name,
+      placeAddress: address
+    });
+  }, [setLocationData]);
 
   // POI 클릭 처리 함수
   const handlePOIClick = useCallback((placeId: string, latLng: google.maps.LatLng) => {
@@ -81,10 +93,16 @@ const MapSearch: React.FC = () => {
           // 모든 InfoWindow 닫기
           closeAllInfoWindows();
           
+          const name = place.name || '알 수 없는 장소';
+          const address = place.formatted_address || '주소 정보 없음';
+          
           setSelectedLocation(location);
-          setPlaceName(place.name || '알 수 없는 장소');
-          setPlaceAddress(place.formatted_address || '주소 정보 없음');
+          setPlaceName(name);
+          setPlaceAddress(address);
           setPlaceDetails(place);
+          
+          // Context 업데이트
+          updateLocationContext(location, name, address);
           
           // 검색 기록 추가
           const searchTerm = place.name || '';
@@ -97,7 +115,7 @@ const MapSearch: React.FC = () => {
         }
       }
     );
-  }, [mapRef, searchHistory]);
+  }, [mapRef, searchHistory, updateLocationContext]);
 
   const moveToPlace = useCallback((place: google.maps.places.PlaceResult) => {
     if (!place.geometry?.location) {
@@ -112,10 +130,16 @@ const MapSearch: React.FC = () => {
     // 모든 InfoWindow 닫기
     closeAllInfoWindows();
 
+    const name = place.name || '알 수 없는 장소';
+    const address = place.formatted_address || '주소 정보 없음';
+
     setSelectedLocation(location);
-    setPlaceName(place.name || '알 수 없는 장소');
-    setPlaceAddress(place.formatted_address || '주소 정보 없음');
+    setPlaceName(name);
+    setPlaceAddress(address);
     setPlaceDetails(place); // 검색으로 찾은 장소의 상세 정보 설정
+    
+    // Context 업데이트
+    updateLocationContext(location, name, address);
     
     // 검색 기록 추가
     const searchTerm = place.name || place.formatted_address || '';
@@ -133,7 +157,7 @@ const MapSearch: React.FC = () => {
 
     // InfoWindow 열기
     setTimeout(() => setIsInfoWindowOpen(true), 150);
-  }, [mapRef, searchHistory]);
+  }, [mapRef, searchHistory, updateLocationContext]);
 
   const onPlaceChanged = () => {
     const place = autocompleteRef.current?.getPlace();
@@ -241,6 +265,9 @@ const MapSearch: React.FC = () => {
           setPlaceDetails(null);
           setIsInfoWindowOpen(true);
           
+          // Context 업데이트
+          updateLocationContext(currentLocation, '현재 위치', '내 위치');
+          
           mapRef?.panTo(currentLocation);
           mapRef?.setZoom(17);
         },
@@ -264,6 +291,9 @@ const MapSearch: React.FC = () => {
     setPlaceName('');
     setPlaceAddress('');
     setPlaceDetails(null);
+    
+    // Context 초기화
+    setLocationData(null);
   };
 
   // 사진 URL 생성 함수

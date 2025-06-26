@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { LocationProvider } from "./contexts/LocationContext"; // LocationProvider import 추가
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/main/mainpage";
@@ -26,17 +27,17 @@ export default function App() {
       }}
     >
       <Router>
-        <Header />
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/plan" element={<PlanPage />} />
-          <Route path="/thread" element={<ThreadPage />} />
-          <Route path="/mypage" element={<MyPage />} />
-
-        </ Routes>
-        <Footer />
+        <LocationProvider>
+          <Header />
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/plan" element={<PlanPage />} />
+            <Route path="/thread" element={<ThreadPage />} />
+            <Route path="/mypage" element={<MyPage />} />
+          </Routes>
+          <Footer />
+        </LocationProvider>
       </Router>
-
     </div>
   );
 }
