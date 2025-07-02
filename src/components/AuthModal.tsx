@@ -1,7 +1,6 @@
 import { Modal, Box, Typography, TextField, Button, IconButton } from "@mui/material";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
-import { user } from "../types/user"; // user 타입 임포트
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useState } from "react";
 

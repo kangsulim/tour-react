@@ -1,157 +1,78 @@
-// services/weatherApi.ts
-import { CurrentWeatherResponse, ForecastResponse } from '../types/weatherTypes';
+import { WeatherResponse, DailyWeather } from '../types/weatherTypes';
+import { YOUR_OPENWEATHER_API_KEY } from '../_env/env.local';
 
-export class WeatherApiService {
-  private readonly baseUrl = 'https://api.openweathermap.org/data/2.5';
-  private readonly apiKey: string;
+const API_KEY = YOUR_OPENWEATHER_API_KEY;
+const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
-  }
-
-  // 현재 날씨 조회 (도시명으로)
-  async getCurrentWeatherByCity(
-    city: string, 
-    units: 'metric' | 'imperial' | 'standard' = 'metric'
-  ): Promise<CurrentWeatherResponse> {
-    const url = `${this.baseUrl}/weather?q=${encodeURIComponent(city)}&appid=${this.apiKey}&units=${units}&lang=kr`;
+export const fetchWeatherForecast = async (lat: number, lng: number): Promise<DailyWeather[]> => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/forecast?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric&lang=kr`
+    );
     
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${data.message || 'Unknown error'}`);
-      }
-      
-      return data as CurrentWeatherResponse;
-    } catch (error) {
-      console.error('Error fetching current weather:', error);
-      throw error;
-    }
-  }
-
-  // 현재 날씨 조회 (좌표로)
-  async getCurrentWeatherByCoords(
-    lat: number, 
-    lon: number, 
-    units: 'metric' | 'imperial' | 'standard' = 'metric'
-  ): Promise<CurrentWeatherResponse> {
-    const url = `${this.baseUrl}/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=${units}&lang=kr`;
-    
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${data.message || 'Unknown error'}`);
-      }
-      
-      return data as CurrentWeatherResponse;
-    } catch (error) {
-      console.error('Error fetching current weather by coords:', error);
-      throw error;
-    }
-  }
-
-  // 5일 예보 조회 (도시명으로)
-  async getForecastByCity(
-    city: string, 
-    units: 'metric' | 'imperial' | 'standard' = 'metric'
-  ): Promise<ForecastResponse> {
-    const url = `${this.baseUrl}/forecast?q=${encodeURIComponent(city)}&appid=${this.apiKey}&units=${units}&lang=kr`;
-    
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${data.message || 'Unknown error'}`);
-      }
-      
-      return data as ForecastResponse;
-    } catch (error) {
-      console.error('Error fetching forecast:', error);
-      throw error;
-    }
-  }
-
-  // 5일 예보 조회 (좌표로)
-  async getForecastByCoords(
-    lat: number, 
-    lon: number, 
-    units: 'metric' | 'imperial' | 'standard' = 'metric'
-  ): Promise<ForecastResponse> {
-    const url = `${this.baseUrl}/forecast?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=${units}&lang=kr`;
-    
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${data.message || 'Unknown error'}`);
-      }
-      
-      return data as ForecastResponse;
-    } catch (error) {
-      console.error('Error fetching forecast by coords:', error);
-      throw error;
-    }
-  }
-
-  // 날씨 아이콘 URL 생성
-  getWeatherIconUrl(iconCode: string, size: '2x' | '4x' | '' = ''): string {
-    const sizeParam = size ? `@${size}` : '';
-    return `https://openweathermap.org/img/wn/${iconCode}${sizeParam}.png`;
-  }
-
-  // 온도 단위 변환 유틸리티
-  convertTemperature(temp: number, from: 'K' | 'C' | 'F', to: 'K' | 'C' | 'F'): number {
-    if (from === to) return temp;
-    
-    // 켈빈으로 먼저 변환
-    let kelvin: number;
-    switch (from) {
-      case 'K':
-        kelvin = temp;
-        break;
-      case 'C':
-        kelvin = temp + 273.15;
-        break;
-      case 'F':
-        kelvin = (temp - 32) * 5/9 + 273.15;
-        break;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    // 목표 단위로 변환
-    switch (to) {
-      case 'K':
-        return kelvin;
-      case 'C':
-        return kelvin - 273.15;
-      case 'F':
-        return (kelvin - 273.15) * 9/5 + 32;
-    }
+    const data: WeatherResponse = await response.json();
+    
+    // 5일간의 날씨 데이터를 일별로 그룹화
+    const dailyForecast = groupForecastByDay(data.list);
+    
+    return dailyForecast.slice(0, 5); // 5일간만 반환
+  } catch (error) {
+    console.error('날씨 데이터를 가져오는 중 오류 발생:', error);
+    throw error;
   }
-}
+};
 
-export interface CurrentWeatherResponse {
-  // Define the structure of the response here
-  main: {
-    temp: number;
-    feels_like: number;
-    humidity: number;
-  };
-  weather: {
-    description: string;
-    icon: string;
-  }[];
-  wind: {
-    speed: number;
-  };
-  sys: {
-    country: string;
-  };
-  name: string;
-  dt: number;
-}
+const groupForecastByDay = (forecastList: WeatherResponse['list']): DailyWeather[] => {
+  const dailyData: { [key: string]: WeatherResponse['list'] } = {};
+  
+  // 날짜별로 데이터 그룹화
+  forecastList.forEach(item => {
+    const date = item.dt_txt.split(' ')[0]; // YYYY-MM-DD 형태로
+    if (!dailyData[date]) {
+      dailyData[date] = [];
+    }
+    dailyData[date].push(item);
+  });
+  
+  // 각 날짜별로 대표값 계산
+  return Object.keys(dailyData).map(date => {
+    const dayData = dailyData[date];
+    
+    // 최고/최저 기온 계산
+    const temps = dayData.map(item => item.main.temp);
+    const temp_min = Math.min(...temps);
+    const temp_max = Math.max(...temps);
+    
+    // 가장 빈번한 날씨 상태 선택 (정오 시간대 우선)
+    const noonData = dayData.find(item => item.dt_txt.includes('12:00:00')) || dayData[0];
+    
+    // 평균 습도 계산
+    const humidity = Math.round(
+      dayData.reduce((sum, item) => sum + item.main.humidity, 0) / dayData.length
+    );
+    
+    // 최대 강수 확률
+    const pop = Math.max(...dayData.map(item => item.pop)) * 100;
+    
+    // 평균 풍속
+    const wind_speed = dayData.reduce((sum, item) => sum + item.wind.speed, 0) / dayData.length;
+    
+    return {
+      date,
+      temp_min: Math.round(temp_min),
+      temp_max: Math.round(temp_max),
+      weather: {
+        main: noonData.weather[0].main,
+        description: noonData.weather[0].description,
+        icon: noonData.weather[0].icon,
+      },
+      humidity,
+      pop: Math.round(pop),
+      wind_speed: Math.round(wind_speed * 10) / 10,
+    };
+  });
+};
